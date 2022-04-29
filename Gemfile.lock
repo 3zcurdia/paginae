@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     paginae (0.1.0)
-      nokogiri (>= 1.5)
+      nokogiri (>= 1.13.4)
 
 GEM
   remote: https://rubygems.org/
