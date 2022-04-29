@@ -12,7 +12,15 @@ module Paginae
         private
 
         def __define_node(name, **kwargs)
-          selector = if kwargs.key?(:css)
+          selector = __node_selector(**kwargs)
+          define_method("__#{name}_node") do
+            instance_variable_get("@#{name}_node") || instance_variable_set("@#{name}_node", document.send(*selector)&.compact)
+          end
+          private "__#{name}_node"
+        end
+
+        def __node_selector(**kwargs)
+          if kwargs.key?(:css)
             kwargs.slice(:css).to_a.flatten
           elsif kargs.key?(:xpath)
             kwargs.slice(:xpath).to_a.flatten
@@ -21,11 +29,6 @@ module Paginae
           else
             raise ArgumentError, "Undefined selector type"
           end
-          
-          define_method("__#{name}_node") do
-            instance_variable_get("@#{name}_node") || instance_variable_set("@#{name}_node", document.send(*selector)&.compact)
-          end
-          private "__#{name}_node"
         end
 
         def __define_reader(name, **kwargs)
@@ -39,18 +42,10 @@ module Paginae
         end
 
         def __define_map_reader(name, **kwargs)
-          mapper = case kwargs[:maped]
-          when Symbol
-            ->(node) { send(kwargs[:maped], node) }
-          when Proc
-            kwargs[:maped]
-          else
-            raise ArgumentError, "Invalid maped type"
-          end
-
+          mapper = __mapper_proc(kwargs[:maped])
           define_method name do
             return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
-  
+
             map = send("__#{name}_node")&.to_h do |node|
               mapper.call(node)
             end
@@ -58,18 +53,19 @@ module Paginae
           end
         end
 
-        def __define_list_reader(name, **kwargs)
-          mapper = case kwargs[:listed]
-          when TrueClass
-            ->(node) { node.text }
+        def __mapper_proc(mapper)
+          case mapper
           when Symbol
-            ->(node) { send(kwargs[:listed], node) }
+            ->(node) { send(mapper, node) }
           when Proc
-            kwargs[:listed]
+            mapper
           else
-            raise ArgumentError, "Invalid listed type"
+            raise ArgumentError, "Invalid maped type"
           end
+        end
 
+        def __define_list_reader(name, **kwargs)
+          mapper = __lister_proc(kwargs[:listed])
           define_method name do
             return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
 
@@ -77,6 +73,19 @@ module Paginae
               mapper.call(node)
             end
             instance_variable_set("@#{name}", list)
+          end
+        end
+
+        def __lister_proc(lister)
+          case lister
+          when TrueClass
+            ->(node) { node.text }
+          when Symbol
+            ->(node) { send(lister, node) }
+          when Proc
+            lister
+          else
+            raise ArgumentError, "Invalid listed type"
           end
         end
 
