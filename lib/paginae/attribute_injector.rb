@@ -14,7 +14,7 @@ module Paginae
         def __define_node(name, **kwargs)
           selector = __node_selector(**kwargs)
           define_method("__#{name}_nodes") do
-            instance_variable_get("@#{name}_nodes") || instance_variable_set("@#{name}_node", document.send(*selector)&.compact)
+            instance_variable_get("@#{name}_nodes") || instance_variable_set("@#{name}_node", document.send(*selector))
           end
           private "__#{name}_nodes"
 
@@ -60,7 +60,7 @@ module Paginae
                 raise ArgumentError, "Invalid mapped type"
               end
             end
-            instance_variable_set("@#{name}", map)
+            instance_variable_set("@#{name}", map&.compact)
           end
         end
 
@@ -80,7 +80,7 @@ module Paginae
                 raise ArgumentError, "Invalid listed type"
               end
             end
-            instance_variable_set("@#{name}", list)
+            instance_variable_set("@#{name}", list&.compact)
           end
         end
 
