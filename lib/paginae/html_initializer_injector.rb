@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Paginae
   module HTMLInitializerInjector
     def self.extended(base)
