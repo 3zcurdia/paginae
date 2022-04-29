@@ -1,8 +1,7 @@
 # Paginae
+[![Ruby](https://github.com/3zcurdia/paginae/actions/workflows/main.yml/badge.svg)](https://github.com/3zcurdia/paginae/actions/workflows/main.yml)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/paginae`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Yes! another Page Object DSL, but this time I promise to keep it simple for the user.
 
 ## Installation
 
@@ -22,7 +21,40 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Just include the Web module into your ruby object
+
+```ruby
+class ProductPage
+  include Paginae::Web
+
+  attribute :name, id: "product-title"
+  attribute :model, xpath: "//h2[@class='product-model']"
+  attribute :summary, css: "#product-overview"
+  attribute :colors, css: ".product-colors li" listed: true
+  attribute :sizes, css: ".product-sizes" listed: -> { |e| e.text.split(', ') }
+  attribute :prices, css: ".product-price", mapped: ->(price) { ["USD", price.text.gsub(/[^\d\.]/, '').to_f] }
+  attribute :specs, css: "#productSpecs li", mapped: :map_specs
+
+  private
+
+  def map_specs(node)
+    [node.text&.gsub(/\s+/, " ")&.strip, node.attribute("data-spec")&.value]]
+  end
+end
+```
+
+And once its defined, you can use it like this:
+
+```ruby
+  product = ProductPage.new(your_http_body_content)
+  product.name
+  product.model
+  product.summary
+  product.colors
+  product.sizes
+  product.price
+  product.specs
+```
 
 ## Development
 
@@ -32,7 +64,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/paginae. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/paginae/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/3zcurdia/paginae. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/3zcurdia/paginae/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -40,4 +72,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Paginae project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/paginae/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Paginae project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/3zcurdia/paginae/blob/main/CODE_OF_CONDUCT.md).
