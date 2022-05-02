@@ -71,7 +71,7 @@ module Paginae
             list = send("__#{name}_nodes")&.map do |node|
               case kwargs[:listed]
               when TrueClass
-                node.text
+                node&.text
               when Symbol
                 send(kwargs[:listed], node)
               when Proc
@@ -86,7 +86,7 @@ module Paginae
 
         def __define_text_reader(name)
           define_method name do
-            send("__#{name}_node").text&.gsub(/\s+/, " ")&.strip
+            send("__#{name}_node")&.text&.gsub(/\s+/, " ")&.strip
           end
         end
       end
