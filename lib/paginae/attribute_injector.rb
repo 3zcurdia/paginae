@@ -3,6 +3,15 @@
 module Paginae
   module AttributeInjector
     def self.extended(base)
+      base.class_eval do
+        def data
+          instance_variables
+            .reject { |var| var.to_s =~ /_node/ }
+            .to_h { |var| [var.to_s.sub("@", "").to_sym, instance_variable_get(var)] }
+            .compact
+        end
+      end
+
       class << base
         def attribute(name, **kwargs)
           __define_node(name, **kwargs)
@@ -86,7 +95,9 @@ module Paginae
 
         def __define_text_reader(name)
           define_method name do
-            send("__#{name}_node")&.text&.gsub(/\s+/, " ")&.strip
+            return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
+
+            instance_variable_set("@#{name}", send("__#{name}_node")&.text&.gsub(/\s+/, " ")&.strip)
           end
         end
       end

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    paginae (0.1.0)
+    paginae (0.1.1)
       nokogiri (>= 1.13.4)
 
 GEM

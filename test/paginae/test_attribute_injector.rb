@@ -4,6 +4,17 @@ require "test_helper"
 
 module Paginae
   class TestAttributeInjector < Minitest::Test
+    class MockPageMultiCss
+      extend Paginae::AttributeInjector
+
+      attribute :title, css: ".title"
+      attribute :description, css: ".description"
+
+      def document
+        Nokogiri::HTML("<html><head></head><body><h1 class='title'>Hello</h1><p class='description'>World</p></body></html>")
+      end
+    end
+
     class MockPageCss
       extend Paginae::AttributeInjector
 
@@ -99,6 +110,13 @@ module Paginae
     def test_css_selector_css_attribute
       page = MockPageCss.new
       assert_equal "Hello World", page.title
+    end
+
+    def test_css_selector_css_multi_attribute
+      page = MockPageMultiCss.new
+      assert_equal "Hello", page.title
+      assert_equal "World", page.description
+      assert_equal({ title: "Hello", description: "World" }, page.data)
     end
 
     def test_css_selector_xpath_attribute
