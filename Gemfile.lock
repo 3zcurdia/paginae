@@ -52,10 +52,10 @@ PLATFORMS
 
 DEPENDENCIES
   debug (~> 1.5)
-  minitest (~> 5.0)
+  minitest (~> 5.15)
   paginae!
   rake (~> 13.0)
-  rubocop (~> 1.21)
+  rubocop (~> 1.29)
 
 BUNDLED WITH
    2.3.7
