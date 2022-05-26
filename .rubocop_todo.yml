@@ -15,12 +15,12 @@ Metrics/AbcSize:
 # Offense count: 1
 # Configuration parameters: IgnoredMethods.
 Metrics/CyclomaticComplexity:
-  Max: 27
+  Max: 35
 
 # Offense count: 1
 # Configuration parameters: IgnoredMethods.
 Metrics/PerceivedComplexity:
-  Max: 27
+  Max: 35
 
 Metrics/MethodLength:
   Exclude:
