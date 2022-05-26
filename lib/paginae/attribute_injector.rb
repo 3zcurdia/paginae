@@ -80,7 +80,7 @@ module Paginae
             list = send("__#{name}_nodes")&.map do |node|
               case kwargs[:listed]
               when TrueClass
-                node&.text
+                node&.text&.strip
               when Symbol
                 send(kwargs[:listed], node)
               when Proc
