@@ -50,6 +50,8 @@ module Paginae
             __define_map_reader(name, **kwargs)
           elsif kwargs.key?(:listed)
             __define_list_reader(name, **kwargs)
+          elsif kwargs.key?(:value)
+            __define_value_reader(name, **kwargs)
           else
             __define_text_reader(name)
           end
@@ -98,6 +100,15 @@ module Paginae
             return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
 
             instance_variable_set("@#{name}", send("__#{name}_node")&.text&.gsub(/\s+/, " ")&.strip)
+          end
+        end
+
+        def __define_value_reader(name, **kwargs)
+          define_method name do
+            return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
+
+            instance_variable_set("@#{name}",
+                                  send("__#{name}_node")&.attribute(kwargs[:value].to_s)&.value&.gsub(/\s+/, " ")&.strip)
           end
         end
       end
