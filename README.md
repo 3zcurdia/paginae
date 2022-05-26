@@ -30,6 +30,7 @@ class ProductPage
   attribute :name, id: "product-title"
   attribute :model, xpath: "//h2[@class='product-model']"
   attribute :summary, css: "#product-overview"
+  attribute :image_url, css: "#product-image", value: :src
   attribute :colors, css: ".product-colors li" listed: true
   attribute :sizes, css: ".product-sizes" listed: -> { |e| e.text.split(', ') }
   attribute :prices, css: ".product-price", mapped: ->(price) { ["USD", price.text.gsub(/[^\d\.]/, '').to_f] }
