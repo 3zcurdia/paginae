@@ -39,7 +39,7 @@ class ProductPage
   private
 
   def map_specs(node)
-    [node.text.gsub(/\s+/, " ")&.strip, node.attribute("data-spec")&.value]]
+    [node.text&.gsub(/\s+/, " ")&.strip, node.attribute("data-spec")&.value]]
   end
 end
 ```
