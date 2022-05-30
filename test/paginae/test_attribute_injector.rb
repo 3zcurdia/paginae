@@ -94,11 +94,9 @@ module Paginae
 
       attribute :some_map, css: ".items a", mapped: ->(node) { [node.text, node["href"]] }
 
-      # rubocop:disable Layout/LineLength
       def document
         Nokogiri::HTML("<html><head></head><body><ul class=\"items\"><a href=\"#1\">a</a><a href=\"#2\">b</a><a href=\"#3\">c</a><ul></body></html>")
       end
-      # rubocop:enable Layout/LineLength
     end
 
     class MockPageMapMethod
@@ -106,11 +104,9 @@ module Paginae
 
       attribute :some_map, css: ".items a", mapped: :to_map
 
-      # rubocop:disable Layout/LineLength
       def document
         Nokogiri::HTML("<html><head></head><body><ul class=\"items\"><a href=\"#1\">a</a><a href=\"#2\">b</a><a href=\"#3\">c</a><ul></body></html>")
       end
-      # rubocop:enable Layout/LineLength
 
       def to_map(node)
         [node.text, node["href"]]

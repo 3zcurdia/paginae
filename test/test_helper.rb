@@ -5,3 +5,9 @@ require "paginae"
 require "debug"
 
 require "minitest/autorun"
+
+module Minitest
+  class Test
+    using Paginae::SpaceStriper
+  end
+end
