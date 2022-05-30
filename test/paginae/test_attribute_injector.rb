@@ -120,8 +120,6 @@ module Paginae
 
     def test_css_selector_css_multi_attribute
       page = MockPageMultiCss.new
-      assert_equal "Hello", page.title
-      assert_equal "World", page.description
       assert_equal({ title: "Hello", description: "World" }, page.data)
     end
 

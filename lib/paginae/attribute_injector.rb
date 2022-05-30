@@ -3,15 +3,6 @@
 module Paginae
   module AttributeInjector
     def self.extended(base)
-      base.class_eval do
-        def data
-          instance_variables
-            .reject { |var| var.to_s =~ /_node/ }
-            .to_h { |var| [var.to_s.sub("@", "").to_sym, instance_variable_get(var)] }
-            .compact
-        end
-      end
-
       class << base
         include NodeBuilder
         include ReaderBuilder
@@ -19,6 +10,16 @@ module Paginae
         def attribute(name, **kwargs)
           __define_node(name, **kwargs)
           __define_reader(name, **kwargs)
+          instance_variable_set("@paginae_attributes", Set.new) unless instance_variable_defined?("@paginae_attributes")
+          instance_variable_get("@paginae_attributes").add(name.to_sym)
+        end
+
+        attr_reader :paginae_attributes
+      end
+
+      base.class_eval do
+        def data
+          self.class.paginae_attributes.to_h { |key| [key, send(key)] }
         end
       end
     end
